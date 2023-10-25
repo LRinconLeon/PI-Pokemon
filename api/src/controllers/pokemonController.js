@@ -1,35 +1,58 @@
 const { Pokemon, Type } = require('../db');
+const URL_API = 'https://pokeapi.co/api/v2/pokemon'
+const axios = require('axios');
 
 const getAllPokemons = async () => {
-    try {
+    // Aqui trae todos los pokemones de la DB
+    const pokemonsDB = await Pokemon.findAll({
+        include: {
+            model: Type,
+            attributes: ['name'],
+            through: {
+                attributes: [],
+            },
+        },
+    });
 
-    } catch(error) {
-        throw new Error(error);
-    }
+    //Aqui traera los pokemones de la API, .results => porque la api trae la info que queremos en results
+    const infoAPI = (await axios.get(`${URL_API}/?limit=40`)).data.results;
+
+    const pokeDatos = infoAPI.map(async (pokemon) => {
+        // Aqui extraemos a 'url' que es donde esta la info que queremos
+        const pokeURL = await axios.get(pokemon.url);
+        // Aqui extraemos la data dentro de 'url'
+        const pokeData = pokeURL.data;
+        // Aqui extraemos las caracteristicas especificas que queremos de la data de 'url'
+        const character = {
+            id: pokeData.id,
+            name: pokeData.name,
+
+        }
+        return character;
+
+    });
+    const pokemonsAPI = await Promise.all(pokeDatos);
+
+    return [...pokemonsDB, ...pokemonsAPI];
 };
 
 const getPokemonByName = async (name) => {
-    try {
-
-    } catch(error) {
-        throw new Error(error);
-    }
 };
 
 const getPokemonByID = async (id) => {
-    try {
-
-    } catch(error) {
-        throw new Error(error);
-    }
 };
 
-const postPokemon = async (name, img, hp, attack, defense, speed, height, weight, type) => {
-    try {
-
-    } catch(error) {
-        throw new Error('This type already exists');
-    }
+const postPokemon = async (name, img, hp, attack, defense, speed, height, weight, type) => { 
+    // Aqui se crea el pokemon
+    const newPokemon = await Pokemon.create({name, img, hp, attack, defense, speed, height, weight});
+    // Aqui se separa la info de type (id, name)
+    const typeNames = type.split(',');
+    // Aqui se mapea para comparar la propiedad name de type con la propiedad de name de Type(api) y se le agrega al nuevo pokemon
+    typeNames.map(async(typeName) => {
+        const findType = await Type.findOne({where: {name: typeName}});
+        newPokemon.addType(findType);
+    })
+    return newPokemon;
 };
 
 module.exports = {

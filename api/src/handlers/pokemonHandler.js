@@ -7,7 +7,7 @@ const {
 
 const getPokemonsHandler = async (req,res) =>{
     const {name} = req.query
-    console.log(name)
+    console.log(name) //! CHECAR ELIMINAR ESTO 
     try {
         if(name){
             const response = await getPokemonByName(name)
