@@ -3,16 +3,13 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
     sequelize.define('Type', {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.UUID,
             primaryKey: true,
-            unique: true,
-            allowNull: false,
-            autoIncrement: true, 
+            defaultValue: DataTypes.UUIDV4
         },
         name: {
             type: DataTypes.STRING,
-            allowNull: false,
-            unique: true,
+            allowNull: false
         }
     }, {timestamps: false})
 }
