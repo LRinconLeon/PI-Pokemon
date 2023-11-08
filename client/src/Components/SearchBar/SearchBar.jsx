@@ -1,35 +1,36 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
 import style from './SearchBar.module.css';
 import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useState } from "react";
 import { getPokemonByName } from "../../Redux/Actions/actions";
 
 const SearchBar = () => {
     const dispatch = useDispatch();
-    const pokemonName = useSelector(state => state.pokemonName);
-    const [searchValue, setSearchValue] = useState(pokemonName);
+    
+    const [name, setName] = useState('');
 
     const inputHandle = (event) => {
-        setSearchValue(event.target.value);
+        setName(event.target.value);
     };
 
     const submitHandle = (event) => {
         event.preventDefault();
-        dispatch(getPokemonByName(searchValue));
-        setSearchValue('');
+        dispatch(getPokemonByName(name));
+        //setName('');
     };
 
     return (
         <div className={style.mainContainer}>
             <form onSubmit={submitHandle}>
                 <input 
-                type="text"
                 onChange={inputHandle}
-                value={searchValue}
                 placeholder='Search Pokemon' 
+                type="text"
                 />
-                <button type='submit' className={style.btnSubmit}>Search</button>
+                <input
+                onClick={submitHandle}
+                type='submit' 
+                />
             </form>
         </div>
     )

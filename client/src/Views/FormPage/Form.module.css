@@ -1,0 +1,23 @@
+.formCont{
+    display: flex;
+}
+
+.formInputs{
+    width: 50%;
+}
+
+.formInputs form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.divPrev{
+    width: 50%;
+}
+
+.formErrors{
+    color: red;
+}
